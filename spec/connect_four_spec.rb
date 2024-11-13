@@ -133,4 +133,61 @@ describe ConnectFour do
       end
     end
   end
+
+  describe '#pick_column' do
+    let(:player) { { name: 'Jane', token: game.white_token } }
+    context 'when player picks a valid number' do
+      let(:valid_input) { '3' }
+
+      before do
+        allow(game).to receive(:gets).and_return(valid_input)
+        allow(game).to receive(:puts)
+      end
+
+      it 'returns the number' do
+        result = game.pick_column(player)
+        expect(result).to eq(valid_input)
+      end
+    end
+
+    context 'when player picks an invalid number' do
+      let(:invalid_number) { '500' }
+
+      before do
+        valid_input = '1'
+        allow(game).to receive(:puts)
+        allow(game).to receive(:gets).and_return(invalid_number, valid_input)
+      end
+
+      it 'returns an error message' do
+        error_message = 'Invalid input.'
+        expect(game).to receive(:puts).with(error_message)
+        game.pick_column(player)
+      end
+    end
+  end
+
+  describe '#board_full?' do
+    context 'when board is full' do
+      before do
+        game.board.each do |row|
+          row.fill(game.white_token)
+        end
+      end
+
+      it 'returns a message' do
+        message = 'Oh no! The board is full, and nobody won'
+        expect(game).to receive(:puts).with(message)
+        game.board_full?
+      end
+    end
+
+    context 'when board is not full' do
+      it 'returns false' do
+        board = Array.new(6) { Array.new(7) { ' ' } }
+        result = game.board_full?(board)
+        expect(result).to eq(false)
+      end
+    end
+  end
 end
