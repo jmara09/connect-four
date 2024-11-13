@@ -68,18 +68,32 @@ class ConnectFour
   end
 
   def connect_horizontal(board, player)
-    # tokens = Array.new(4, nil)
-    # start_point = [0, 0]
-    # end_point = [0, board[0].length - 1]
-    # traverse = [0, 0]
+    tokens = Array.new(4, nil)
+    start_point = [0, 0]
+    end_point = [0, board[0].length - 1]
+    traverse = [0, 0]
 
-    # loop do
-    #   tokens = shift
-    #   tokens.push(board[traverse[0]][traverse[1]])
+    loop do
+      tokens.shift
+      tokens.push(board[traverse[0]][traverse[1]])
 
-    #   return true if connected(tokens, player)
-    # end
-    board[0][0..3].uniq.join == player[:token]
+      if tokens.uniq.join == player[:token] && !tokens.include?(nil)
+        puts "Congratulations #{player[:name]}! You win!"
+        return true
+      end
+
+      if traverse == end_point
+        start_point[0] += 1
+        end_point[0] += 1
+        traverse = start_point.dup
+        tokens = Array.new(4, nil)
+      else
+        traverse[1] += 1
+      end
+
+      break if end_point == [board.length, board[0].length]
+    end
+    false
   end
 
   def print_board
