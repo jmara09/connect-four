@@ -58,6 +58,7 @@ describe ConnectFour do
         game.board[1][2] = token
         game.board[0][3] = token
         allow(game).to receive(:puts)
+        allow(game).to receive(:print)
       end
       it 'returns true' do
         player = { name: 'John', token: token }
@@ -85,6 +86,7 @@ describe ConnectFour do
         board = game.board
         board[0][0..4] = token, token, token, token
         allow(game).to receive(:puts)
+        allow(game).to receive(:print)
       end
 
       it 'returns true' do
@@ -114,6 +116,7 @@ describe ConnectFour do
         game.board[2][6] = token
         game.board[3][6] = token
         allow(game).to receive(:puts)
+        allow(game).to receive(:print)
       end
 
       it 'returns true' do
@@ -144,9 +147,9 @@ describe ConnectFour do
         allow(game).to receive(:puts)
       end
 
-      it 'returns the number' do
+      it 'converts the input to integer' do
         result = game.pick_column(player)
-        expect(result).to eq(valid_input)
+        expect(result).to eq(valid_input.to_i)
       end
     end
 

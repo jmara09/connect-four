@@ -35,6 +35,7 @@ class ConnectFour
       tokens.push(board[traverse[0]][traverse[1]])
 
       if tokens.uniq.join == player[:token] && !tokens.include?(nil)
+        current_board
         puts "Congratulations #{player[:name]}! You win!"
         return true
       end
@@ -73,6 +74,7 @@ class ConnectFour
       tokens.push(board[traverse[0]][traverse[1]])
 
       if tokens.uniq.join == player[:token] && !tokens.include?(nil)
+        current_board
         puts "Congratulations #{player[:name]}! You win!"
         return true
       end
@@ -102,6 +104,7 @@ class ConnectFour
       tokens.push(board[traverse[0]][traverse[1]])
 
       if tokens.uniq.join == player[:token] && !tokens.include?(nil)
+        current_board
         puts "Congratulations #{player[:name]}! You win!"
         return true
       end
@@ -120,15 +123,6 @@ class ConnectFour
     false
   end
 
-  def player_input
-    puts "Welcome! Let's play Connect Four"
-    puts 'Please put your name for player one'
-    @player_one[:name] = gets.chomp
-    puts 'Please put your name for player two'
-    @player_two[:name] = gets.chomp
-    puts "Thanks #{@player_one[:name]} and #{@player_two[:name]}. Now, let's start playing!"
-  end
-
   def pick_column(player)
     puts "Hi, #{player[:name]}. Please choose a column from 1 to #{@board[0].length}"
     loop do
@@ -138,7 +132,7 @@ class ConnectFour
         redo
       end
 
-      return input
+      return input.to_i
     end
   end
 
@@ -153,29 +147,52 @@ class ConnectFour
     full
   end
 
+  def win?(board, player)
+    if connect_diagonal(board, player) ||
+       connect_horizontal(board, player) ||
+       connect_vertical(board, player)
+      true
+    else
+      false
+    end
+  end
+
   def play_game(board = @board)
     current_player = @player_one
     player_input
     loop do
       print_board
       insert_token(current_player[:token], pick_column(current_player))
-      break if connect_diagonal(board, current_player)
-      break if connect_horizontal(board, current_player)
-      break if connect_vertical(board, current_player)
+      break if win?(board, current_player)
       break if board_full?
 
       current_player = current_player == @player_one ? @player_two : @player_one
     end
   end
 
-  def print_board
-    puts "\nPick one from the column below\n\n"
-    print "    #{%w[1 2 3 4 5 6 7].join('   ')}\n"
+  private
+
+  def player_input
+    puts "Welcome! Let's play Connect Four"
+    puts 'Please put your name for player one'
+    @player_one[:name] = gets.chomp
+    puts 'Please put your name for player two'
+    @player_two[:name] = gets.chomp
+    puts "Thanks #{@player_one[:name]} and #{@player_two[:name]}. Now, let's start playing!"
+  end
+
+  def current_board
     @board.each_with_index do |row, index|
       print "#{index + 1} "
       puts row.map { |cell| "| #{cell} " }.join + '|'
       print '  '
       puts '-' * ((row.length * 4) + 1)
     end
+  end
+
+  def print_board
+    puts "\nPick one from the column below\n\n"
+    print "    #{%w[1 2 3 4 5 6 7].join('   ')}\n"
+    current_board
   end
 end
