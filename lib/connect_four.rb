@@ -22,13 +22,6 @@ class ConnectFour
     end
   end
 
-  def connected?(tokens, player)
-    return false unless tokens.uniq.join == player[:token] && !tokens.include?(nil)
-
-    puts "Congratulations #{player[:name]}! You win!"
-    true
-  end
-
   def connect_diagonal(board, player)
     tokens = Array.new(4, nil)
     start_point = [0, 0]
@@ -91,7 +84,36 @@ class ConnectFour
         traverse[1] += 1
       end
 
-      break if end_point == [board.length, board[0].length]
+      break if end_point == [board.length, board[0].length - 1]
+    end
+    false
+  end
+
+  def connect_vertical(board, player)
+    tokens = Array.new(4, nil)
+    start_point = [0, 0]
+    end_point = [board.length - 1, 0]
+    traverse = [0, 0]
+
+    loop do
+      tokens.shift
+      tokens.push(board[traverse[0]][traverse[1]])
+
+      if tokens.uniq.join == player[:token] && !tokens.include?(nil)
+        puts "Congratulations #{player[:name]}! You win!"
+        return true
+      end
+
+      if traverse == end_point
+        start_point[1] += 1
+        end_point[1] += 1
+        traverse = start_point.dup
+        tokens = Array.new(4, nil)
+      else
+        traverse[0] += 1
+      end
+
+      break if end_point == [board.length - 1, board[0].length]
     end
     false
   end

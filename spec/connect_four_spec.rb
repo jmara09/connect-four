@@ -58,9 +58,8 @@ describe ConnectFour do
         game.board[1][2] = token
         game.board[0][3] = token
         allow(game).to receive(:puts)
-        allow(game).to receive(:connected?).and_return(true)
       end
-      it 'stops the game and you win' do
+      it 'returns true' do
         player = { name: 'John', token: token }
         board = game.board
         result = game.connect_diagonal(board, player)
@@ -79,17 +78,58 @@ describe ConnectFour do
   end
 
   describe '#connect_horizontal' do
+    let(:token) { game.black_token }
+
     context 'when there is winning combination horizontally' do
-      let(:token) { game.black_token }
       before do
         board = game.board
-        board[0][0..3] = token, token, token, token
+        board[0][0..4] = token, token, token, token
+        allow(game).to receive(:puts)
       end
+
       it 'returns true' do
         player = { name: 'Jane', token: token }
         board = game.board
         result = game.connect_horizontal(board, player)
         expect(result).to eq(true)
+      end
+    end
+
+    context 'when there is no winning combination' do
+      it 'returns false' do
+        player = { name: 'Jane', token: token }
+        board = game.board
+        result = game.connect_horizontal(board, player)
+        expect(result).to eq(false)
+      end
+    end
+  end
+
+  describe '#connect_vertical' do
+    let(:token) { game.white_token }
+    context 'when there is a winning combination vertically' do
+      before do
+        game.board[0][6] = token
+        game.board[1][6] = token
+        game.board[2][6] = token
+        game.board[3][6] = token
+        allow(game).to receive(:puts)
+      end
+
+      it 'returns true' do
+        player = { name: 'Jane', token: token }
+        board = game.board
+        result = game.connect_vertical(board, player)
+        expect(result).to eq(true)
+      end
+    end
+
+    context 'when there is no winning combination' do
+      it 'returns false' do
+        player = { name: 'Jane', token: token }
+        board = game.board
+        result = game.connect_vertical(board, player)
+        expect(result).to eq(false)
       end
     end
   end
