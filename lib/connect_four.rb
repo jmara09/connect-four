@@ -1,5 +1,5 @@
 class ConnectFour
-  attr_accessor :board, :white_token, :black_token
+  attr_accessor :board, :white_token, :black_token, :player_one, :player_two
 
   def initialize
     @board = Array.new(6) { Array.new(7) { ' ' } }
@@ -8,7 +8,78 @@ class ConnectFour
   end
 
   def insert_token(token, column)
-    @board[5][column - 1] = token
+    bottom_row = 5
+    loop do
+      if bottom_row.negative?
+        puts 'This column is full. Please choose a different one.'
+        break
+      elsif @board[bottom_row][column - 1] == ' '
+        @board[bottom_row][column - 1] = token
+        break
+      else
+        bottom_row -= 1
+      end
+    end
+  end
+
+  def connected?(tokens, player)
+    return false unless tokens.uniq.join == player[:token] && !tokens.include?(nil)
+
+    puts "Congratulations #{player[:name]}! You win!"
+    true
+  end
+
+  def connect_diagonal(board, player)
+    tokens = Array.new(4, nil)
+    start_point = [0, 0]
+    end_point = [0, 0]
+    traverse = [0, 0]
+
+    until end_point[0] == board.length - 1 && end_point[1] == board[0].length - 1
+      tokens.shift
+      tokens.push(board[traverse[0]][traverse[1]])
+
+      if tokens.uniq.join == player[:token] && !tokens.include?(nil)
+        puts "Congratulations #{player[:name]}! You win!"
+        return true
+      end
+
+      if traverse == end_point
+        if start_point[0] < board.length - 1
+          start_point[0] += 1
+        elsif start_point[0] == board.length - 1
+          start_point[1] += 1
+        end
+
+        if end_point[1] < board[0].length - 1
+          end_point[1] += 1
+        elsif end_point[1] == board[0].length - 1
+          end_point[0] += 1
+        end
+
+        tokens = Array.new(4, nil)
+        traverse = start_point.dup
+      else
+        traverse[0] -= 1 if traverse[0] > end_point[0]
+        traverse[1] += 1 if traverse[1] < end_point[1]
+      end
+    end
+    false
+  end
+
+  def connect_horizontal(board, player)
+    # tokens = Array.new(4, nil)
+    # start_point = [0, 0]
+    # end_point = [0, board[0].length - 1]
+    # traverse = [0, 0]
+
+    # loop do
+    #   tokens = shift
+    #   tokens.push(board[traverse[0]][traverse[1]])
+
+    #   return true if connected(tokens, player)
+    # end
+    board[0][0..3].uniq.join == player[:token]
   end
 
   def print_board
