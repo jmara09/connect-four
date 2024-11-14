@@ -25,41 +25,30 @@ class ConnectFour
   end
 
   def connect_diagonal(board, player)
-    tokens = Array.new(4, nil)
-    start_point = [0, 0]
-    end_point = [0, 0]
-    traverse = [0, 0]
+    token = player[:token]
+    rows = board.length
+    cols = board[0].length
 
-    until end_point[0] == board.length - 1 && end_point[1] == board[0].length - 1
-      tokens.shift
-      tokens.push(board[traverse[0]][traverse[1]])
-
-      if tokens.uniq.join == player[:token] && !tokens.include?(nil)
-        current_board
-        puts "Congratulations #{player[:name]}! You win!"
-        return true
-      end
-
-      if traverse == end_point
-        if start_point[0] < board.length - 1
-          start_point[0] += 1
-        elsif start_point[0] == board.length - 1
-          start_point[1] += 1
+    # Check for diagonals from top-left to bottom-right
+    (0..rows - 4).each do |row|
+      (0..cols - 4).each do |col|
+        if (0..3).all? { |i| board[row + i][col + i] == token }
+          puts "Congratulations #{player[:name]}! You win!"
+          return true
         end
-
-        if end_point[1] < board[0].length - 1
-          end_point[1] += 1
-        elsif end_point[1] == board[0].length - 1
-          end_point[0] += 1
-        end
-
-        tokens = Array.new(4, nil)
-        traverse = start_point.dup
-      else
-        traverse[0] -= 1 if traverse[0] > end_point[0]
-        traverse[1] += 1 if traverse[1] < end_point[1]
       end
     end
+
+    # Check for diagonals from bottom-left to top-right
+    (3...rows).each do |row|
+      (0..cols - 4).each do |col|
+        if (0..3).all? { |i| board[row - i][col + i] == token }
+          puts "Congratulations #{player[:name]}! You win!"
+          return true
+        end
+      end
+    end
+
     false
   end
 
