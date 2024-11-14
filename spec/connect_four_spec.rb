@@ -51,12 +51,29 @@ describe ConnectFour do
 
   describe '#connect_diagonal' do
     let(:token) { game.white_token }
-    context 'when there is a four consecutive element diagonally' do
+    context 'when there is a connected element from top-left to bottom-right' do
       before do
-        game.board[3][0] = token
-        game.board[2][1] = token
-        game.board[1][2] = token
-        game.board[0][3] = token
+        game.board[2][2] = token
+        game.board[3][3] = token
+        game.board[4][4] = token
+        game.board[5][5] = token
+        allow(game).to receive(:puts)
+        allow(game).to receive(:print)
+      end
+      it 'returns true' do
+        player = { name: 'John', token: token }
+        board = game.board
+        result = game.connect_diagonal(board, player)
+        expect(result).to eq(true)
+      end
+    end
+
+    context 'when there is a connected element from bottom-left to top-right' do
+      before do
+        game.board[3][2] = token
+        game.board[2][3] = token
+        game.board[1][4] = token
+        game.board[0][5] = token
         allow(game).to receive(:puts)
         allow(game).to receive(:print)
       end
